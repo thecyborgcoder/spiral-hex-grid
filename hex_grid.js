@@ -198,7 +198,7 @@ export class HexGrid {
      * @return {int} The starting hexId of the layer.
      */
     layerStartHexId( hexId ){
-        return 3 * ( layerOf(hexId) ) * ( layerOf(hexId) - 1) + 1;
+        return 3 * ( this.layerOf(hexId) ) * ( this.layerOf(hexId) - 1) + 1;
     }
 
     /**
@@ -208,7 +208,7 @@ export class HexGrid {
      * @return {int} The starting hex ID of the next layer.
      */
     nextLayerStartHexId( hexId ){
-        return 3 * ( layerOf(hexId) + 1 ) * layerOf(hexId) + 1;
+        return 3 * ( this.layerOf(hexId) + 1 ) * this.layerOf(hexId) + 1;
     }
 
     /**
@@ -218,7 +218,7 @@ export class HexGrid {
      * @return {int} The starting hexId of the previous layer.
      */
     previousLayerStartHexId( hexId ){
-        return 3 * ( layerOf(hexId) - 1 ) * ( layerOf(hexId) - 2 ) + 1;
+        return 3 * ( this.layerOf(hexId) - 1 ) * ( this.layerOf(hexId) - 2 ) + 1;
     }
 
     /**
@@ -228,7 +228,7 @@ export class HexGrid {
      * @return {int} The position of the hexagon within its layer.
      */
     positionInLayer( hexId ){
-        return hexId - layerStartHexId(hexId);
+        return hexId - this.layerStartHexId(hexId);
     }
 
     /**
@@ -249,7 +249,7 @@ export class HexGrid {
      * @return {bool} true if the hexId is a corner hexagon, false otherwise
      */
     isCornerHex( hexId ){
-        return ( hexId == layerOf(hexId) * round( hexId/layerOf(hexId) ) );
+        return ( hexId == this.layerOf(hexId) * round( hexId/this.layerOf(hexId) ) );
     }
     
     /**
@@ -287,7 +287,7 @@ export class HexGrid {
      */
     sectionOf(hexId) {
         if ( hexId == 0 ) return 0;
-        return Math.floor(positionInLayer( hexId  ) / ( layerOf( hexId ) * 6 ) * 6);
+        return Math.floor(this.positionInLayer( hexId  ) / ( this.layerOf( hexId ) * 6 ) * 6);
     }
 
     /**
@@ -297,8 +297,8 @@ export class HexGrid {
      * @return {int} The hexId of the up-left neighbor of the given hexagon.
      */
     upLeftNeighbor(hexId) {
-        const section = sectionOf(hexId);
-        const layer = layerOf(hexId);
+        const section = this.sectionOf(hexId);
+        const layer = this.layerOf(hexId);
         const sqrt6 =  Math.round(Math.sqrt(hexId / 3)) * 6;
     
         switch (section) {
@@ -310,7 +310,7 @@ export class HexGrid {
             case 3:
                 return 2 - (sqrt6 - hexId);
             case 4:
-                if (hexId !== cornerHex(layer, 4)) {
+                if (hexId !== this.cornerHex(layer, 4)) {
                     return hexId - sqrt6 + 2;
                 }
             default:
@@ -326,13 +326,13 @@ export class HexGrid {
      * @return {int} The hexId of the up-right neighbor of the given hexagon.
      */
     upRightNeighbor(hexId) {
-        const layer = layerOf(hexId);
-        const section = sectionOf(hexId);
+        const layer = this.layerOf(hexId);
+        const section = this.sectionOf(hexId);
         const sqrt6 = Math.round(Math.sqrt(hexId / 3)) * 6;
 
         switch (section) {
             case 0:
-                return hexId !== cornerHex(layer, 0) ? hexId + 1 : hexId + sqrt6 + 2;
+                return hexId !== this.cornerHex(layer, 0) ? hexId + 1 : hexId + sqrt6 + 2;
             case 3:
                 return hexId - 1;
             case 4:
@@ -350,15 +350,15 @@ export class HexGrid {
      * @return {int} The hexId of the right neighbor of the given hexagon.
      */
     rightNeighbor(hexId) {
-        const section = sectionOf(hexId);
-        const layer = layerOf(hexId);
+        const section = this.sectionOf(hexId);
+        const layer = this.layerOf(hexId);
         const sqrt6 = Math.round(Math.sqrt(hexId/3)) * 6;
 
         switch (section) {
             case 0:
-                return hexId == cornerHex(layer, 0) ? hexId + 1 : hexId - sqrt6 + 6;
+                return hexId == this.cornerHex(layer, 0) ? hexId + 1 : hexId - sqrt6 + 6;
             case 1:
-                return hexId == cornerHex(layer, 1) ? hexId + sqrt6 + 3 : hexId + 1;
+                return hexId == this.cornerHex(layer, 1) ? hexId + sqrt6 + 3 : hexId + 1;
             case 2:
             case 3:
                 return hexId + sqrt6 + 3;
@@ -377,18 +377,18 @@ export class HexGrid {
      * @return {int} The hexId of the down-right neighbor of the given hexagon.
      */
     downRightNeighbor(hexId) {
-        const section = sectionOf(hexId);
-        const layer = layerOf(hexId);
+        const section = this.sectionOf(hexId);
+        const layer = this.layerOf(hexId);
         const sqrt6 = Math.round(Math.sqrt(hexId/3)) * 6;
         switch (section) {
             case 0:
-                if (positionInLayer(hexId) == 0){
+                if (this.positionInLayer(hexId) == 0){
                     return hexId - 1;
                 }
             case 1:
-                return hexId === cornerHex(layer, 1) ? hexId + 1 : hexId - sqrt6 + 5;
+                return hexId === this.cornerHex(layer, 1) ? hexId + 1 : hexId - sqrt6 + 5;
             case 2:
-                return hexId === cornerHex(layer, 2) ? hexId + sqrt6 + 4 : hexId + 1;
+                return hexId === this.cornerHex(layer, 2) ? hexId + sqrt6 + 4 : hexId + 1;
             case 3:
             case 4:
                 return hexId + sqrt6 + 4;
@@ -404,21 +404,21 @@ export class HexGrid {
      * @return {int} The hexId of the down-left neighbor of the given hexagon.
      */
     downLeftNeighbor(hexId) {
-        const layer = layerOf(hexId);
-        const section = sectionOf(hexId);
+        const layer = this.layerOf(hexId);
+        const section = this.sectionOf(hexId);
         const sqrt6 = Math.round(Math.sqrt(hexId / 3)) * 6;
 
         switch (section) {
             case 0:
-                if(positionInLayer(hexId) == 0){
+                if(this.positionInLayer(hexId) == 0){
                     return hexId + sqrt6 - 1;
                 }  
                 return hexId - 1;          
             case 1:
             case 2:
-                return hexId === cornerHex(layer, 2) ? hexId + 1 : hexId - sqrt6 + 4;
+                return hexId === this.cornerHex(layer, 2) ? hexId + 1 : hexId - sqrt6 + 4;
             case 3:
-                return hexId === cornerHex(layer, 3) ? hexId + sqrt6 + 5 : hexId + 1;
+                return hexId === this.cornerHex(layer, 3) ? hexId + sqrt6 + 5 : hexId + 1;
             case 4: 
             default:
                 return hexId + sqrt6 + 5; 
@@ -432,8 +432,8 @@ export class HexGrid {
      * @return {int} The hexId of the left neighbor of the given hexagon.
      */
     leftNeighbor(hexId) {
-        const layer = layerOf(hexId);
-        const section = sectionOf(hexId);
+        const layer = this.layerOf(hexId);
+        const section = this.sectionOf(hexId);
         const sqrt6 = Math.round(Math.sqrt(hexId / 3)) * 6;
 
         switch (section) {
@@ -443,9 +443,9 @@ export class HexGrid {
                 return hexId - 1;
             case 2:
             case 3:
-                return hexId === cornerHex(layer, 3) ? hexId + 1 : hexId - sqrt6 + 3;
+                return hexId === this.cornerHex(layer, 3) ? hexId + 1 : hexId - sqrt6 + 3;
             case 4:
-                return hexId === cornerHex(layer, 4) ? hexId + sqrt6 + 6 : hexId + 1;
+                return hexId === this.cornerHex(layer, 4) ? hexId + sqrt6 + 6 : hexId + 1;
             case 5:
                 return hexId + sqrt6 + 6;
             default:
@@ -462,29 +462,29 @@ export class HexGrid {
     neighborsOf( hexId ){
         if (hexId == 0) return [1,2,3,4,5,6];
         let neighbors = [];
-        let upLeftNeighborId = upLeftNeighbor(hexId);
-        let upRightNeighborId = upRightNeighbor(hexId);
-        let rightNeighborId = rightNeighbor(hexId);
-        let downRightNeighborId = downRightNeighbor(hexId);
-        let downLeftNeighborId = downLeftNeighbor(hexId);
-        let leftNeighborId = leftNeighbor(hexId);
+        let upLeftNeighborId = this.upLeftNeighbor(hexId);
+        let upRightNeighborId = this.upRightNeighbor(hexId);
+        let rightNeighborId = this.rightNeighbor(hexId);
+        let downRightNeighborId = this.downRightNeighbor(hexId);
+        let downLeftNeighborId = this.downLeftNeighbor(hexId);
+        let leftNeighborId = this.leftNeighbor(hexId);
         if (upLeftNeighborId <= this.maxHexId){
-            neighbors.push(upLeftNeighborId);
+            neighbors.push(this.upLeftNeighborId);
         }
         if (upRightNeighborId <= this.maxHexId){
-            neighbors.push(upRightNeighborId);
+            neighbors.push(this.upRightNeighborId);
         }
         if (rightNeighborId <= this.maxHexId){
-            neighbors.push(rightNeighborId);
+            neighbors.push(this.rightNeighborId);
         }
         if (downRightNeighborId <= this.maxHexId){
-            neighbors.push(downRightNeighborId);
+            neighbors.push(this.downRightNeighborId);
         }
         if (downLeftNeighborId <= this.maxHexId){
-            neighbors.push(downLeftNeighborId);
+            neighbors.push(this.downLeftNeighborId);
         }
         if (leftNeighborId <= this.maxHexId){
-            neighbors.push(leftNeighborId);
+            neighbors.push(this.leftNeighborId);
         }
         return neighbors;
     }
