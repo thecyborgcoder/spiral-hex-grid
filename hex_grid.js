@@ -101,6 +101,8 @@ export class HexGrid {
                 this.minY = this.hexCenters[i].y;
             } 
         }
+        this.width = this.maxX - this.minX;
+        this.height = this.maxY - this.minY;
     }
 
     /**
