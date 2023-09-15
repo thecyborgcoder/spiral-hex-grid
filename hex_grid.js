@@ -18,6 +18,9 @@ export class HexGrid {
     // TODO
     // Wrap around
 
+    // TODO 
+    // Offset
+
     constructor( layers, scale = 1 ) {
         // Set input properties
         this.layers = layers;
@@ -86,7 +89,8 @@ export class HexGrid {
     }
 
     calculateGridBorders(){
-        this.maxX = this.maxY = this.minX = this.minY = 0;
+        this.maxX = this.maxY = -Infinity;
+        this.minX = this.minY = Infinity;
         for(let i = 0; i < this.hexCenters.length; i++) {  
             if ( this.hexCenters[i].x > this.maxX ) {
                 this.maxX = this.hexCenters[i].x;
@@ -300,7 +304,7 @@ export class HexGrid {
         const section = this.sectionOf(hexId);
         const layer = this.layerOf(hexId);
         const sqrt6 =  Math.round(Math.sqrt(hexId / 3)) * 6;
-    
+        
         switch (section) {
             case 0:
             case 1:
@@ -461,6 +465,7 @@ export class HexGrid {
      */
     neighborsOf( hexId ){
         if (hexId == 0) return [1,2,3,4,5,6];
+        
         let neighbors = [];
         let upLeftNeighborId = this.upLeftNeighbor(hexId);
         let upRightNeighborId = this.upRightNeighbor(hexId);
@@ -468,24 +473,26 @@ export class HexGrid {
         let downRightNeighborId = this.downRightNeighbor(hexId);
         let downLeftNeighborId = this.downLeftNeighbor(hexId);
         let leftNeighborId = this.leftNeighbor(hexId);
+        
         if (upLeftNeighborId <= this.maxHexId){
-            neighbors.push(this.upLeftNeighborId);
+            neighbors.push(upLeftNeighborId);
         }
         if (upRightNeighborId <= this.maxHexId){
-            neighbors.push(this.upRightNeighborId);
+            neighbors.push(upRightNeighborId);
         }
         if (rightNeighborId <= this.maxHexId){
-            neighbors.push(this.rightNeighborId);
+            neighbors.push(rightNeighborId);
         }
         if (downRightNeighborId <= this.maxHexId){
-            neighbors.push(this.downRightNeighborId);
+            neighbors.push(downRightNeighborId);
         }
         if (downLeftNeighborId <= this.maxHexId){
-            neighbors.push(this.downLeftNeighborId);
+            neighbors.push(downLeftNeighborId);
         }
         if (leftNeighborId <= this.maxHexId){
-            neighbors.push(this.leftNeighborId);
+            neighbors.push(leftNeighborId);
         }
+        
         return neighbors;
     }
 
