@@ -1,5 +1,5 @@
 # spiral-hex-grid
-A javacript concentric/spiral 2D hexagonal grid using single-coordinate Ids for each hexagon.
+A javacript concentric/spiral 2D hexagonal grid using single-coordinate IDs for each hexagon.
 
 Represents a hexagonal grid using a 1D array with hexagon IDs (hexId) starting from a center position of 0 and "spiraling" outwards incremeniting each ID by 1. Technically, the grid is formed using
 concentric rings of hexagons that surround the previous layer rather than strictly spiraling.
@@ -9,3 +9,4 @@ Does not implent graphical rendering. An external graphics/game library can be u
 # to-do
 - [ ] Rotation
 - [ ] Wrap around
+- [ ] Edge and Corner positions and IDs
